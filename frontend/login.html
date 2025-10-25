@@ -1,0 +1,76 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        background-color: gray;
+    }
+
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .login-popup {
+        width: 400px;
+        background-color: red;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    #login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    #login-form div {
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+    }
+
+    #login-form button {
+        height: 40px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #login-form input {
+        height: 30px;
+        font-size: 16px;
+        padding: 5px;
+    }
+</style>
+<body>
+    <div class="login-container">
+        <div class="login-popup">
+            <form id="login-form">
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username">
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="text" id="password" name="password">
+                </div>                
+                <button>
+                    <p>Login</p>
+                    <img> <!-- -->
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
