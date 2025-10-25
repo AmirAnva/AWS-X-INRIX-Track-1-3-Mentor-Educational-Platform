@@ -253,9 +253,8 @@ class User:
     # For scratchpad
     def get_scratchpads(self):
         scratchpads = db.fetch("""select * from scratchpad where pairing_group_id = %d;""", (self.pairing_group_id))
-
-        # TODO create a scratchpad class to actually
-        
+        for i in range(len(scratchpads)):
+            scratchpads[i] = Scratchpad(scratchpads[i])
         return scratchpads
 
 class Assignment:
@@ -308,9 +307,37 @@ class Assignment:
         db.execute("""update assignments set is_draft = 1 where id = %d;""", (self.id))
         self.is_draft = 1
 
+class Scratchpad:
+    @staticmethod
+    def new(user, title, content, linked_assignment_id=None):
+        pairing_group_id = user.pairing_group_id
+        if pairing_group_id is None:
+            raise Exception("User must be paired to create a scratchpad")
+        db.execute("""insert into scratchpad (pairing_group_id, title, content, linked_assignment_id) values (%d, '%s', '%s', %s);""", (pairing_group_id, title, content, linked_assignment_id if linked_assignment_id is not None else 'NULL'))
     
+    @staticmethod
+    def from_id(scratchpad_id):
+        rows = db.fetch("""select * from scratchpad where id = %d;""", (scratchpad_id))
+        if len(rows) == 0:
+            return None
+        sql_data = rows[0]
+        return Scratchpad(sql_data)
 
+    def __init__(self, sql_data):
+        self.id = sql_data['id']
+        self.pairing_group_id = sql_data['pairing_group_id']
+        self.title = sql_data['title']
+        self.content = sql_data['content']
+        self.linked_assignment_id = sql_data['linked_assignment_id']
+        self.last_modified = sql_data['last_modified']
 
+    def set_title(self, title):
+        db.execute("""update scratchpad set title = '%s' where id = %d;""", (title, self.id))
+        self.title = title
+
+    def set_content(self, content):
+        db.execute("""update scratchpad set content = '%s', last_modified = datetime('now') where id = %d;""", (content, self.id))
+        self.content = content
 
 if __name__ == "__main__":
     import os

@@ -6,7 +6,7 @@ from database import User
 
 redis_manager = socketio.AsyncRedisManager('redis://localhost:6379')
 
-client_origin = "http://localhost:8082"  # Change this to your client's origin
+client_origin = "http://127.0.0.1:8081"  # Change this to your client's origin
 
 sio = socketio.AsyncServer(
     async_mode='asgi',
@@ -42,10 +42,10 @@ async def connect(sid, environ, auth):
     mentor = user.get_paired_user()
     mentor_id = mentor.id if mentor else None
 
-    sio.save_session(sid, {'user_id': user.id, 'mentor_id': mentor_id})
+    await sio.save_session(sid, {'user_id': user.id, 'mentor_id': mentor_id})
     sio.enter_room(sid, f"user_{user.id}")
-    sio.emit('connected', {'message': 'Successfully connected to WebSocket server.'}, room=f"user_{user.id}")
-    sio.emit('initial_data', {'messages': user.get_conversation_history()}, room=f"user_{user.id}")
+    await sio.emit('connected', {'message': 'Successfully connected to WebSocket server.'}, room=f"user_{user.id}")
+    await sio.emit('initial_data', {'messages': user.get_conversation_history()}, room=f"user_{user.id}")
     print(f"User {user.username} connected with sid {sid}")
     
 

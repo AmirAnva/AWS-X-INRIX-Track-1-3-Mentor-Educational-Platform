@@ -1,5 +1,5 @@
 # filename: main.py
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, Cookie, Response
 import uvicorn
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from redis import asyncio as redis
@@ -58,16 +58,9 @@ async def get():
 
 
 
-@app.get("/homepage")
-async def get_homepage():
-    try:
-        return FileResponse("../frontend/homePage.html")
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=404)
-
 @app.get("/homepage/data")
-async def get_homepage_data():
-    all_items = db.fetch("SELECT * FROM assignments")
+async def get_homepage_data(): #IGNORE THIS :user: User = Depends(get_required_user)
+    all_items = db.fetch("SELECT * FROM assignments") # IT IS TWEAK CORE (I LUV P LO )user.get_assignments()
     assignments = [item for item in all_items if item.get('type') != 'announcement']
     announcements = [item for item in all_items if item.get('type') == 'announcement']
     return JSONResponse({

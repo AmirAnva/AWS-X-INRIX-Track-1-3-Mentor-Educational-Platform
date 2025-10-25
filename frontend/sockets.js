@@ -1,4 +1,4 @@
-const WS_URL = "/socket.io"
+const WS_URL = "http://localhost:8082/socket.io"
 
 socket = io(WS_URL, {
     withCredentials: true
