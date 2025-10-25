@@ -1,0 +1,16 @@
+Server Endpoints:
+    Sockets:
+
+    - Connect 
+    Connect so that chat and scratch pad work with no load time
+
+    - send_chat (server should know to whom implicitly based off of student id)
+    - update_scratch (scratchpad id)
+    - complete_scratch (scratchpad id: once quiz submitted, then can parse with ai and find knowledge difference)
+    REST:
+    - get_homepage (assignments, announcements)
+
+
+Client Endpoints (Socket Only):
+    - chat_message (incoming chat message)
+    - scratch_data (recieve initial data)
