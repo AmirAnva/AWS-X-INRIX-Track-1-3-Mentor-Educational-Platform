@@ -11,7 +11,20 @@
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
 
     body{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         background-color: #f0f0f0;
+    }
+
+    .assignment-body{
+        background-color: #f0f0f0;
+        display:flex;
+        gap:20px;
+        align-items: center;
+        height:90vh;
+        width:90vw;
     }
     p {
         font-family: 'Lexend', sans-serif;
@@ -28,39 +41,40 @@
         margin: 0;
     }
     .scratchpad-container {
-        width: 80%;
-        height:40%;
-        margin: 20px auto;
-        margin-bottom:10px;
+        height:90%;
         border: 2px solid rgb(98, 162, 102);
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         padding: 10px;
         background-color: white;
+        
     }
     .lecture-content {
-        width: 80%;
-        height: 50%;
-        margin: 20px auto;
-        border: 2px solid rgb(98, 162, 102);
+        height:90%;
+        width:100%;
+        border: 2px solid black;
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         padding: 10px;
-
+        gap:10px;
         display:flex;
+        flex-direction: column;
+        flex:0.8;
     }
 
     .metadata-holder {
-        flex:0.75;
+        flex:0.3;
         display:flex;
         flex-direction: column;
+        background-color: white;
+        padding:10px;
+        border-radius: 5px;
         justify-content: center;
-        align-items: center;
     }
    
     video{
         flex:1;
-        border-radius:5;
+        border-radius:5px;
     }
 
     .video-title{
@@ -68,27 +82,80 @@
     }
     .video-author{
         color: grey;
+        font-size: 12px;
     }
     .video-class{
         color: grey;
+        font-size:17px;
+        font-family: 'Lexend', sans-serif;
+    }
+    .button-holder{
+        display:flex;
+        gap:10px;
+        justify-content: flex-end;
+    }
+    .video-button{
+        background-color: rgb(98, 162, 102);
+        color: white;
+        border:none;
+        padding:8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        height:45px;
+        width:146px;
+        font-family: 'Lexend', sans-serif;
+    }
+    .right-panel{
+        flex:1;
+        height:90%;
+        display:flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap:10px;
+    }
+    .submit-panel{
+        display:flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border: 2px solid black;
     }
 </style>
 <body>
-    <div class="lecture-content">
-        <video controls width="65%" height="100%"></video>
-        <div class="metadata-holder">
-            <div style="">
-                <h1 class="video-title">Java Glassfish Basics</h1>
-                <h2 class="video-class">AP Computer Science A</h2>
-                <p class="video-author">Bradley Lindyman</p>
+    <div class="assignment-body">
+        <div class="lecture-content">
+            <video controls></video>
+            <div class="metadata-holder">
+                <div style="">
+                    <h1 class="video-title">Java Glassfish Basics</h1>
+                    <div class="video-horizontals">
+                        <h2 class="video-class">AP Computer Science A</h2>
+                        <p class="video-author">Bradley Lindyman</p>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="scratchpad-container">
+                <div class="editor"></div>
+            </div>
+            <div class="submit-panel">
+                <p style="color:grey;font-size:12px;">Your instructor will not see your exact notes.</p>
+                <div class="button-holder">
+                    <button class="video-button">Save for Later</button>
+                    <button class="video-button">Submit</button>
+                </div>
             </div>
             
         </div>
     </div>
-    <div class="scratchpad-container">
-        <div class="editor"></div>
-    </div>
-    <p style="width:100%; text-align: center; margin-top:0; font-size:12px;">Your instructor will not see your exact notes.</p>
+    
+    
 </body>
 <script>
     new OverType(".editor", {
