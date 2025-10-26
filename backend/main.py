@@ -30,9 +30,18 @@ redis_client = redis.Redis(connection_pool=pool)
 @app.get("/")
 async def get_homepage(session: str = Cookie(None)):
     print(f"Session Cookie: {session}")
-    if not session:
+    try:
+        user = User.from_session(session)
+        print(f"User from session: {user}")
+    except Exception as e:
+        print(f"Error retrieving user from session: {e}")
+        user = None
+
+    if not user:
+        print("No session cookie, serving login page")
         return FileResponse("../frontend/login.html")
     else:
+        print("Session cookie found, serving home page")
         return FileResponse("../frontend/homePage.html")
 
 @app.post("/api/v1/submit")

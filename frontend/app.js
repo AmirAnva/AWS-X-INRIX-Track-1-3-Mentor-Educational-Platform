@@ -58,6 +58,10 @@ pairStudentForm.addEventListener("submit", function(event) {
 let newAssignmentForm = document.getElementById("new-assignment-form");
 newAssignmentForm.addEventListener("submit", function(event) {
     event.preventDefault();
+
+    let blocker = document.getElementById("blocker");
+    blocker.style.display = "block";
+    
     
     let formData = new FormData(newAssignmentForm);
     fetch('/api/v1/create_assignment', {
@@ -139,6 +143,19 @@ function loadHomePage() {
                 let newAssignmentBtn = document.getElementById("new-assignment-btn");
                 newAssignmentBtn.style.display = "block";
             }
+            if (!IS_MENTOR && data.assignments.length == 0) {
+                setTimeout(() => {
+                    let confettiCanvas = document.getElementById('confetti-canvas');
+                    var myConfetti = confetti.create(confettiCanvas, {
+                        resize: true,
+                        useWorker: true
+                    });
+                    myConfetti({
+                        particleCount: 200,
+                        spread: 200
+                    });
+                }, 1000);
+            }
             loadAssignments(data.assignments);
         }
     })
@@ -157,6 +174,14 @@ function loadAssignments(assignments) {
     let children = assignmentList.getElementsByClassName("assignment");
     while (children.length > 0) {
         children[0].parentNode.removeChild(children[0]);
+    }
+
+    if (assignments.length == 0) {
+        let html = `<div class="assignment" style="border-color: rgb(98, 162, 102)"><p>You've completed everything available!</p></div>`;
+        let obj = htmlToObject(html);
+        assignmentList.appendChild(obj);
+        return;
+
     }
 
     for (let i = 0; i < assignments.length; i++) {

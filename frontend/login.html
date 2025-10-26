@@ -93,12 +93,46 @@
         font-family: 'Noto Serif', serif;
         margin: 0;
     }
+
+    .full-page-blocker {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .popup {
+        max-width: 400px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: white;
+
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        border: 2px solid black;
+    }
 </style>
 <body>
+    <div class="full-page-blocker">
+        <div class="popup">
+            <h1 id="popup-title">Error</h1>
+            <p id="popup-message">Message</p>
+            <button onclick="hidePopup()">Close</button>
+        </div>
+    </div>
     <div class="login-container">
         <div class="login-popup">
             <form id="login-form">
-                <h1>Login</h1>
+                <h1>mntr.ai</h1>
                 <div>
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username">
@@ -137,13 +171,36 @@
             }
         } else {
             if (resp.status == 404) {
-                // no user add popup
+                let popup = document.querySelector('.full-page-blocker');
+                popup.style.opacity = '1';
+                popup.style.pointerEvents = 'all';
+
+                let title = document.getElementById('popup-title');
+                let message = document.getElementById('popup-message');
+
+                title.innerText = "User Not Found";
+                message.innerText = "The username you entered does not exist. Please check and try again.";
             } else if (resp.status == 401) {
-                // invalid password popup
+                let popup = document.querySelector('.full-page-blocker');
+                let title = document.getElementById('popup-title');
+                let message = document.getElementById('popup-message');
+
+                title.innerText = "Authentication Failed";
+                message.innerText = "The username or password you entered is incorrect. Please try again.";
+
+                popup.style.opacity = '1';
+                popup.style.pointerEvents = 'all';
             } else {
                 console.error('Error logging in', resp);
             }
         }
     });
+
+    function hidePopup() {
+        let popup = document.querySelector('.full-page-blocker');
+        popup.style.opacity = '0';
+        popup.style.pointerEvents = 'none';
+    }
+
 </script>
 </html>
