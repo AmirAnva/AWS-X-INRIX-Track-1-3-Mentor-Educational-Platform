@@ -2,6 +2,7 @@ import boto3
 import dotenv
 from botocore.exceptions import ClientError
 import os
+import uuid
 
 dotenv.load_dotenv()
 

@@ -180,9 +180,13 @@ async def submit_assignment(session: str = Cookie(None), assignment_id: int = Fo
         "ffmpeg", "-i", video_path, "-vn", "-acodec", "pcm_s16le", "-ar", "44100", "-ac", "2", audio_path
     ], check=True)
 
+    import uuid
+
+    transcription_job_name = f"transcription_job_{assignment_id}_{uuid.uuid4()}"
+
     upload_file_to_s3(audio_path, f"assignment_{assignment_id}_audio")
-    transcribe_file_from_s3(f"assignment_{assignment_id}_audio", f"transcription_job_{assignment_id}")
-    response = wait_for_transcription_job(f"transcription_job_{assignment_id}")
+    transcribe_file_from_s3(f"assignment_{assignment_id}_audio", transcription_job_name)
+    response = wait_for_transcription_job(transcription_job_name)
     delete_file_from_s3(f"assignment_{assignment_id}_audio")
 
     transcript_url = response['TranscriptionJob']['Transcript']['TranscriptFileUri']
