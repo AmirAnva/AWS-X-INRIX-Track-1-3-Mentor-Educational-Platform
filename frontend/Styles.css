@@ -5,12 +5,6 @@
     font-family: 'Kumbh Sans', sans-serif;
 }
 
-body {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
 .navbar{
     background: black;
     height: 80px;
@@ -18,7 +12,7 @@ body {
     justify-content: center;
     align-items: center;
     font-size: 1.2rem;
-    /* position: sticky; */
+    position: sticky;
     top: 0;
     z-index: 999;
 }
@@ -190,19 +184,10 @@ body {
     #mobile-menu.is-active .bar:nth-child(2){
         opacity: 0;
     }
-
     #mobile-menu.is-active .bar:nth-child(1){
         transform: translateY(8px)rotate(45deg);
     }
     #mobile-menu.is-active .bar:nth-child(3){
         transform: translateY(-8px)rotate(-45deg);
     }
-}
-
-#assignments-view {
-    background-color: indigo;
-}
-
-.body-page {
-    flex: 1;
 }
