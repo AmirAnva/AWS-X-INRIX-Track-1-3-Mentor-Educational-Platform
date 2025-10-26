@@ -219,7 +219,7 @@ class User:
         return self.session_token
     
     def clear_sessions(self):
-        db.execute("""delete from sessions where user_id = ?;""", (self.id))
+        db.execute("""delete from sessions where user_id = ?;""", (self.id,))
     
     def pair_with(self, other_user):
         User.pair_users(self.id, other_user.id)

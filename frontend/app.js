@@ -20,8 +20,14 @@ document.getElementById("assignments-btn").addEventListener("click", function() 
     focusView("assignments");
 });
 
-document.getElementById("scratch-pad-btn").addEventListener("click", function() {
-    focusView("scratch-pad");
+document.getElementById("sign-out-btn").addEventListener("click", function() {
+    fetch('/api/v1/sign_out', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.location.reload();
+    })
 })
 
 // teacher pairing button
