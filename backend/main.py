@@ -11,6 +11,10 @@ from database import User, UserNotFoundException, InvalidPasswordException, Assi
 from fastapi import Form
 from fastapi import File, UploadFile
 from io import BytesIO
+import subprocess
+import requests
+
+from aws import upload_file_to_s3, delete_file_from_s3, transcribe_file_from_s3, wait_for_transcription_job, find_submission_errors
 
 app = FastAPI()
 app.mount('/socket.io', sio_app)
@@ -141,12 +145,46 @@ async def get_assignment_file(assignment_id: int, session: str = Cookie(None)):
     
     return FileResponse(file_path, media_type='application/octet-stream', filename=f"assignment_{assignment.id}")
 
+    import subprocess
+
 @app.post('/api/v1/submit_assignment')
 async def submit_assignment(session: str = Cookie(None), assignment_id: int = Form(), content: str = Form()):
     user = User.from_session(session)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid session")
     user.submit_assignment(assignment_id, content)
+
+    
+    # extract audio from the video
+    # transcribe with aws transcribe
+    # prompt with amazon bedrock
+    # cry :_(
+    # sleep
+
+    # STEP 1
+    video_path = os.path.join(TEMP_MOVIE_FOLDER, f"assignment_{assignment_id}")
+    if not os.path.exists(video_path):
+        return {"status": "success"}
+    
+    audio_path = os.path.join(TEMP_MOVIE_FOLDER, f"assignment_{assignment_id}_audio.wav")
+    subprocess.run([
+        "ffmpeg", "-i", video_path, "-vn", "-acodec", "pcm_s16le", "-ar", "44100", "-ac", "2", audio_path
+    ], check=True)
+
+    upload_file_to_s3(audio_path, f"assignment_{assignment_id}_audio")
+    transcribe_file_from_s3(f"assignment_{assignment_id}_audio", f"transcription_job_{assignment_id}")
+    response = wait_for_transcription_job(f"transcription_job_{assignment_id}")
+    delete_file_from_s3(f"assignment_{assignment_id}_audio")
+
+    transcript_url = response['TranscriptionJob']['Transcript']['TranscriptFileUri']
+    transcript_response = requests.get(transcript_url)
+    transcript_data = transcript_response.json()
+    transcript_text = transcript_data['results']['transcripts'][0]['transcript']
+
+    errors = find_submission_errors(transcript_text, content)
+
+    user.add_ai_review_to_submission(assignment_id, errors)
+    
     return {"status": "success"}
 
 

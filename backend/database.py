@@ -88,7 +88,8 @@ def build_databases():
     `id` integer not null primary key autoincrement,
     `assignment_id` INT not null,
     `data` TEXT not null,
-    `submission_date` DATETIME not null default (datetime('now'))
+    `submission_date` DATETIME not null default (datetime('now')),
+    `ai_review` TEXT null
 );"""
     db.execute(submissions_table)
 
@@ -277,6 +278,9 @@ class User:
             raise AssignmentSubmissionException("User not allowed to submit this assignment")
         db.execute("""insert into submissions (assignment_id, data) values (?, ?);""", (assignment_id, data))
 
+    def add_ai_review_to_submission(self, assignment_id, ai_review):
+        db.execute("""update submissions set ai_review = ? where assignment_id = ?;""", (ai_review, assignment_id))
+
     # For scratchpad
     def get_scratchpads(self):
         scratchpads = db.fetch("""select * from scratchpad where pairing_group_id = ?;""", (self.pairing_group_id,))
@@ -385,7 +389,7 @@ class Scratchpad:
         db.execute("""update scratchpad set content = ?, last_modified = datetime('now') where id = ?;""", (content, self.id))
         self.content = content
 
-
+build_databases()
 
 if __name__ == "__main__":
     import os

@@ -74,7 +74,7 @@ submitAssignmentBtn.addEventListener("click", function() {
     let formData = new FormData();
     formData.append("assignment_id", currentAssignmentId);
     formData.append("content", editor[0].textarea.value);
-    
+    loadHomePage();
     fetch('/api/v1/submit_assignment', {
         method: 'POST',
         body: formData
@@ -83,7 +83,7 @@ submitAssignmentBtn.addEventListener("click", function() {
     .then(data => {
         console.log('Submit assignment response:', data);
         if (data.status === "success") {
-            loadHomePage();
+
         }
     })
 })
@@ -199,6 +199,10 @@ function loadAssignment(assignmentData) {
     } else {
         // fill in overtype textarea
         submissionEditor[0].setValue(assignmentData.submission.data || "");
+        
+        let aiKnowledgeGapText = document.getElementById("ai-knowledge-gaps")
+        aiKnowledgeGapText.textContent = assignmentData.submission.ai_review || "No AI review available.";
+
         focusView("assignment-feedback")
 
     }

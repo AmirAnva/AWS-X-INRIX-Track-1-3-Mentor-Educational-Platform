@@ -1,3 +1,5 @@
 backend/app_database.sqlite
 .DS_Store
 __pycache__/
+backend/.env
+/backend/temp
