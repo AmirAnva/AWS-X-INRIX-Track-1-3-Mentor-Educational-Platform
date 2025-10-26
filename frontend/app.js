@@ -5,6 +5,12 @@ let editor = new OverType(".editor", {
     toolbar: true, 
 })
 
+let submissionEditor = new OverType(".student-submission-overtype", {
+    toolbar: false, 
+    padding: '0px',
+})
+// submissionEditor[0].textarea.style.padding = "0px !important";
+
 menu.addEventListener('click', function() {
     menu.classList.toggle('is-active');
     menuLinks.classList.toggle('active');
@@ -101,6 +107,8 @@ function focusView(viewId, showMentorChat=true) {
     }
 }
 
+
+let IS_MENTOR = false; // will be set later
 function loadHomePage() {
     fetch('/api/v1/home').then(response => {
         if (!response.ok) {
@@ -109,15 +117,20 @@ function loadHomePage() {
         return response.json();
     }).then(data => {
         console.log('Homepage data:', data);
+
+        if (data.user_type == 1) {
+            IS_MENTOR = true;
+        }
+
         if (data.is_paired == null) {
-            if (data.user_type == 0) { // A student
+            if (IS_MENTOR) {
                 focusView("no-pairing-student", false)
             } else { // A mentor
                 focusView("no-pairing-teacher", false)
             }
         } else {
             focusView("assignments");
-            if (data.user_type == 1) {
+            if (IS_MENTOR) {
                 let newAssignmentBtn = document.getElementById("new-assignment-btn");
                 newAssignmentBtn.style.display = "block";
             }
@@ -151,7 +164,6 @@ function loadAssignments(assignments) {
         </div>`;
         let obj = htmlToObject(html);
 
-
         obj.addEventListener("click", function() {
             loadAssignment(assignment);
         })
@@ -161,25 +173,33 @@ function loadAssignments(assignments) {
 }
 
 function loadAssignment(assignmentData) {
-    console.log("Loading assignment data:", assignmentData);
-    let assignmentTitle = document.getElementById("assignment-title-full");
-    let assignmentDescription = document.getElementById("assignment-description-full");
-    let assignmentDueDate = document.getElementById("assignment-due-date-full");
+    if (!IS_MENTOR) {
+        console.log("Loading assignment data:", assignmentData);
+        let assignmentTitle = document.getElementById("assignment-title-full");
+        let assignmentDescription = document.getElementById("assignment-description-full");
+        let assignmentDueDate = document.getElementById("assignment-due-date-full");
 
-    currentAssignmentId = assignmentData.id;
+        currentAssignmentId = assignmentData.id;
 
-    console.log("Setting assignment title and description");
-    console.log("Title:", assignmentData.title);
-    console.log("Description:", assignmentData.description);
+        console.log("Setting assignment title and description");
+        console.log("Title:", assignmentData.title);
+        console.log("Description:", assignmentData.description);
 
-    console.log(assignmentTitle);
-    console.log(assignmentDescription);
+        console.log(assignmentTitle);
+        console.log(assignmentDescription);
 
-    assignmentTitle.textContent = assignmentData.title;
-    assignmentDescription.textContent = assignmentData.description;
-    assignmentDueDate.textContent = "Due Date: " + assignmentData.due_date;
+        assignmentTitle.textContent = assignmentData.title;
+        assignmentDescription.textContent = assignmentData.description;
+        assignmentDueDate.textContent = "Due Date: " + assignmentData.due_date;
 
-    focusView("assignment");
+        focusView("assignment");
+    } else {
+        // fill in overtype textarea
+        submissionEditor[0].setValue(assignmentData.submission.data || "");
+        focusView("assignment-feedback")
+
+    }
+    
 }
 
 

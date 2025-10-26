@@ -646,3 +646,17 @@ video{
     flex-direction: column;
     gap: 5px;
 }
+
+.box {
+    border: 2px solid black;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+#assignment-feedback {
+    display: flex;
+    flex-direction: column;
+}

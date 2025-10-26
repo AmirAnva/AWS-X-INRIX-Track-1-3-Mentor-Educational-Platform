@@ -63,7 +63,7 @@ function appendSentMessage(messageText) {
     chatWindow.appendChild(container);
 
     
-    chatWindow.scrollTop = chatWindow.scrollHeight;
+    //chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
 function handleSendMessage() {
@@ -120,7 +120,7 @@ function appendReceivedMessage(messageText) {
     chatWindow.appendChild(container);
 
     // bottom so the new message is visible
-    chatWindow.scrollTop = chatWindow.scrollHeight;
+    //chatWindow.scrollTop = chatWindow.scrollHeight;
 
     
 }

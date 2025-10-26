@@ -237,16 +237,28 @@ class User:
     # For assignments
     def get_assignments(self):
         # get assignments where pairing_group_id matches user's pairing_group_id or is -1
-        assignments = db.fetch("""
-            select * from assignments
-            where (pairing_group_id = ? or pairing_group_id = -1)
-            and id not in (select assignment_id from submissions);
-        """, (self.pairing_group_id,))
+        assignments = []
+        if (self.is_mentor):
+            assignments = db.fetch("""
+                select * from assignments
+                where (pairing_group_id = ? or pairing_group_id = -1);
+            """, (self.pairing_group_id,))
 
-        # if they aren't a mentor, hide drafts and templates
-        if not self.is_mentor:
-            # assignments = [a for a in assignments if a['is_draft'] == 0 and a['pairing_group_id'] != -1]
-            assignments = [a for a in assignments if a['pairing_group_id'] != -1]
+            # get submissions if thye exist and attach them
+            for i in range(len(assignments)):
+                submission_rows = db.fetch("""
+                    select * from submissions
+                    where assignment_id = ?;
+                """, (assignments[i]['id'],))
+                print("SUBMISSION ROWS: ", submission_rows)
+                if len(submission_rows) > 0:
+                    assignments[i]['submission'] = submission_rows[0]
+        else:
+            assignments = db.fetch("""
+                select * from assignments
+                where pairing_group_id = ? and id not in (select assignment_id from submissions);
+            """, (self.pairing_group_id,))
+
 
         assignment_objs = []
         for a in assignments:
@@ -301,6 +313,8 @@ class Assignment:
         self.type = sql_data['type']
         self.data = sql_data['data']
 
+        self.submission = sql_data.get('submission', None)
+        
     def __str__(self):
         return f"Assignment(id={self.id}, title={self.title}, description={self.description}, due_date={self.due_date}, is_draft={self.is_draft}, type={self.type})"
 
@@ -334,7 +348,8 @@ class Assignment:
             'due_date': self.due_date,
             'is_draft': self.is_draft,
             'type': self.type,
-            'data': self.data
+            'data': self.data,
+            'submission': self.submission
         }
 
 class Scratchpad:
