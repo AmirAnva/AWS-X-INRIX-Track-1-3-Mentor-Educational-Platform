@@ -5,7 +5,7 @@ from http.cookies import SimpleCookie
 from database import User, Scratchpad
 from diff_match_patch import diff_match_patch
 
-redis_manager = socketio.AsyncRedisManager('redis://localhost:6379')
+redis_manager = socketio.AsyncRedisManager('redis://localhost:6379/0')
 
 client_origin = [
     "http://localhost:8082",
