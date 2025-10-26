@@ -17,7 +17,6 @@ sio = socketio.AsyncServer(
 
 sio_app = socketio.ASGIApp(sio)
 
-
 @sio.event
 async def connect(sid, environ, auth):
     print("Client connected, sid ",sid)

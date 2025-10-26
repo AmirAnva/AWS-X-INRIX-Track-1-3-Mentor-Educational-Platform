@@ -211,6 +211,9 @@ class User:
         rows = db.fetch(select_sql)
         return len(rows) > 0
     
+    def get_session_token(self):
+        return self.session_token
+    
     def pair_with(self, other_user):
         User.pair_users(self.id, other_user.id)
 
@@ -256,6 +259,7 @@ class User:
         for i in range(len(scratchpads)):
             scratchpads[i] = Scratchpad(scratchpads[i])
         return scratchpads
+    
 
 class Assignment:
     @staticmethod
