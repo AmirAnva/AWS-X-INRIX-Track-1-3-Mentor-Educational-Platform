@@ -52,21 +52,52 @@
             </div>
 
             <div id="assignments" class="full-screen-page">
-                <div class="assignment-container">
+                <div class="assignment-container" id="assignment-list">
                     <h1>Assignments</h1>
-                    <div class="assignment" style="border-color: rgb(98, 162, 102)">
-                        <p class="assignment-type">Asynchronous Lesson</p>
-                        <h2>Watch Lecture Video #1</h2>
-                        <p class="assignment-description">This video explains how to do things with scratch. You will learn why scratch is cool, and other cool things about scratch</p>
-                        <p class="assignment-due-date">Due 10/25/2025</p>
-                    </div>
-                    <div class="assignment" style="border-color: rgb(98, 122, 162)">
-                        <p class="assignment-type">Written Submission</p>
-                        <h2>Lecture Essay Response</h2>
-                        <p class="assignment-description">This video explains how to do things with scratch. You will learn why scratch is cool, and other cool things about scratch</p>
-                        <p class="assignment-due-date">Due 10/26/2025</p>
-                    </div>
+                    <button id="new-assignment-btn" onclick="focusView('new-assignment')" style="display: none;">Create New</button>
                 </div>
+            </div>
+
+            <div id="new-assignment" class="full-screen-page">
+                <h1 style="margin-bottom: 10px;">New Assignment</h1>
+                <form id="new-assignment-form">
+                    <div class="form-group">
+                        <label for="assignment-title">Assignment Title:</label>
+                        <input type="text" id="assignment-title" name="title" required>
+                    </div>
+                    
+                    <!-- <div class="form-group">
+                        <label for="assignment-type">Assignment Type:</label>
+                        <select id="assignment-type" name="type" required>
+                            <option value="">Select Type</option>
+                            <option value="Asynchronous Lesson">Asynchronous Lesson</option>
+                            <option value="Written Submission">Written Submission</option>
+                            <option value="Programming Assignment">Programming Assignment</option>
+                            <option value="Quiz">Quiz</option>
+                        </select>
+                    </div> -->
+                    
+                    <div class="form-group">
+                        <label for="assignment-description">Description:</label>
+                        <textarea id="assignment-description" name="description" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="assignment-due-date">Due Date:</label>
+                        <input type="date" id="assignment-due-date" name="due_date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lecture-upload">Upload Lecture Video:</label>
+                        <input type="file" id="lecture-upload" name="lecture_video" accept="video/*">
+                    </div>
+                    
+
+                    <div class="form-actions">
+                        <button type="button" onclick="focusView('assignments')">Cancel</button>
+                        <button type="submit">Create Assignment</button>
+                    </div>
+                </form>
             </div>
 
             <div id="scratch-pad" class="full-screen-page">
@@ -79,14 +110,10 @@
                         <video controls></video>
                         <div class="metadata-holder">
                             <div style="">
-                                <h1 class="video-title">Java Glassfish Basics</h1>
-                                <div class="video-horizontals">
-                                    <h2 class="video-class">AP Computer Science A</h2>
-                                    <p class="video-author">Bradley Lindyman</p>
-                                </div>
+                                <h1 id="assignment-title-full" class="video-title">Java Glassfish Basics</h1>
+                                <p id="assignment-description-full" class="video-description">An introduction to Java Glassfish server setup and deployment.</p>
+                                <p id="assignment-due-date-full" class="video-due-date">Due Date: 2024-12-31</p>
                             </div>
-                            
-                            
                         </div>
                     </div>
                     <div class="right-panel">
@@ -96,11 +123,9 @@
                         <div class="submit-panel">
                             <p style="color:grey;font-size:12px;">Your instructor will not see your exact notes.</p>
                             <div class="button-holder">
-                                <button class="video-button">Save for Later</button>
-                                <button class="video-button">Submit</button>
+                                <button class="video-button" id="submit-assignment-btn">Submit</button>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
@@ -150,13 +175,11 @@
 
 </body>
 <script>
-    new OverType(".editor", {
-        toolbar: true, 
-    })
+
 </script>
 <script src="app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 <script src="diff_match_patch_uncompressed.js"></script>
 <script src="sockets.js"></script>
-<script src="scratchpad.js"></script>
+<script src="messaging.js"></script>
 </html>

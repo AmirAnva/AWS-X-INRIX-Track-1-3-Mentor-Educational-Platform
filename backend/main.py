@@ -6,7 +6,7 @@ from redis import asyncio as redis
 from sockets import sio_app
 from database import db
 
-from database import User, UserNotFoundException, InvalidPasswordException
+from database import User, UserNotFoundException, InvalidPasswordException, Assignment
 
 from fastapi import Form
 
@@ -28,6 +28,10 @@ async def get_homepage(session: str = Cookie(None)):
         return FileResponse("../frontend/login.html")
     else:
         return FileResponse("../frontend/homePage.html")
+
+@app.post("/api/v1/submit")
+async def submit():
+    pass
 
 @app.post('/api/v1/auth')
 async def auth(username: str = Form(), password: str = Form()): 
@@ -89,8 +93,35 @@ async def get_homepage_data(session: str = Cookie(None)):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid session")
     assignments = user.get_assignments()
-    print(assignments)
-    return {"first_name": user.first_name, "last_name": user.last_name, "username": user.username, "user_type": user.is_mentor, "is_paired": user.paired_id}
+    assignments = [a.to_json() for a in assignments]
+    return {"first_name": user.first_name, "last_name": user.last_name, "username": user.username, "user_type": user.is_mentor, "is_paired": user.paired_id, "assignments": assignments}
+
+@app.post('/api/v1/create_assignment')
+async def create_assignment(session: str = Cookie(None), title: str = Form(), description: str = Form(), due_date: str = Form()):
+    user = User.from_session(session)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    if not user.is_mentor:
+        raise HTTPException(status_code=403, detail="Only mentors can create assignments")
+    
+    print(f"Creating assignment with title: {title}, description: {description}, due_date: {due_date}")
+
+    assignment = Assignment.new(user)
+    assignment.set_title(title)
+    assignment.set_description(description)
+    assignment.set_due_date(due_date)
+
+    return {"status": "success", "assignment_id": assignment.id}
+
+@app.post('/api/v1/submit_assignment')
+async def submit_assignment(session: str = Cookie(None), assignment_id: int = Form(), content: str = Form()):
+    user = User.from_session(session)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    user.submit_assignment(assignment_id, content)
+    return {"status": "success"}
+
+
 
 @app.get("/{path:path}")
 async def serve_static(path: str):

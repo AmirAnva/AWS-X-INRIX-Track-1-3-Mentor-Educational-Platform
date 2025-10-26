@@ -172,6 +172,7 @@ class User:
         mentor = User.from_id(mentor_id)
         if student is None or mentor is None:
             raise UserNotFoundException("One or both users not found")
+        print(student.paired_id, mentor.paired_id)
         if student.paired_id is not None or mentor.paired_id is not None:
             raise Exception("One or both users are already paired")
 
@@ -236,10 +237,16 @@ class User:
     # For assignments
     def get_assignments(self):
         # get assignments where pairing_group_id matches user's pairing_group_id or is -1
-        assignments = db.fetch("""select * from assignments where pairing_group_id = ? or pairing_group_id = -1;""", (self.pairing_group_id,))
+        assignments = db.fetch("""
+            select * from assignments
+            where (pairing_group_id = ? or pairing_group_id = -1)
+            and id not in (select assignment_id from submissions);
+        """, (self.pairing_group_id,))
+
         # if they aren't a mentor, hide drafts and templates
         if not self.is_mentor:
-            assignments = [a for a in assignments if a['is_draft'] == 0 and a['pairing_group_id'] != -1]
+            # assignments = [a for a in assignments if a['is_draft'] == 0 and a['pairing_group_id'] != -1]
+            assignments = [a for a in assignments if a['pairing_group_id'] != -1]
 
         assignment_objs = []
         for a in assignments:
@@ -249,7 +256,7 @@ class User:
     
     def submit_assignment(self, assignment_id, data):
         # TODO fix
-        assignment_rows = db.fetch("""select * from assignments where id = ?;""", (assignment_id))
+        assignment_rows = db.fetch("""select * from assignments where id = ?;""", (assignment_id,))
         if len(assignment_rows) == 0:
             raise AssignmentNotFoundException("Assignment not found")
         assignment = assignment_rows[0]
@@ -271,13 +278,13 @@ class Assignment:
         pairing_group_id = creator.pairing_group_id
         if pairing_group_id is None:
             raise Exception("User must be paired to create an assignment")
-        cursor = db.execute("""insert into assignments (pairing_group_id, title, description, due_date, is_draft, type, data) values (?, '', '', datetime('now', '+7 days'), 1, '', '');""", (pairing_group_id))
+        cursor = db.execute("""insert into assignments (pairing_group_id, title, description, due_date, is_draft, type, data) values (?, '', '', datetime('now', '+7 days'), 1, '', '');""", (pairing_group_id,))
         assignment_id = cursor.lastrowid
         return Assignment.from_id(assignment_id)
     
     @staticmethod
     def from_id(assignment_id):
-        rows = db.fetch("""select * from assignments where id = ?;""", (assignment_id))
+        rows = db.fetch("""select * from assignments where id = ?;""", (assignment_id,))
         if len(rows) == 0:
             return None
         sql_data = rows[0]
@@ -294,6 +301,8 @@ class Assignment:
         self.type = sql_data['type']
         self.data = sql_data['data']
 
+    def __str__(self):
+        return f"Assignment(id={self.id}, title={self.title}, description={self.description}, due_date={self.due_date}, is_draft={self.is_draft}, type={self.type})"
 
     def set_title(self, title):
         db.execute("""update assignments set title = ? where id = ?;""", (title, self.id))
@@ -314,6 +323,19 @@ class Assignment:
     def unpublish(self):
         db.execute("""update assignments set is_draft = 1 where id = ?;""", (self.id))
         self.is_draft = 1
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'pairing_group_id': self.pairing_group_id,
+            'title': self.title,
+            'description': self.description,
+            'creation_date': self.creation_date,
+            'due_date': self.due_date,
+            'is_draft': self.is_draft,
+            'type': self.type,
+            'data': self.data
+        }
 
 class Scratchpad:
     @staticmethod

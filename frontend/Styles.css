@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
 
-p, a {
+p, a, label {
     font-family: 'Lexend', sans-serif;
     margin: 0;
 
@@ -22,6 +22,15 @@ input {
     border: 2px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
+}
+
+textarea {
+    font-family: 'Lexend', sans-serif;
+    padding: 8px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    resize: vertical;
 }
 
 button {
@@ -290,6 +299,15 @@ body{
     flex-direction: column;
     gap: 10px;
     border-radius: 10px;
+
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease;
+}
+
+.assignment:hover {
+    border-color: rgb(98, 162, 102);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
 }
 
 .assignment > h2 {
@@ -520,23 +538,26 @@ h1{
 .scratchpad-container {
     height:90%;
     border: 2px solid rgb(98, 162, 102);
-    border-radius: 5px;
+    border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 10px;
     background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     
 }
 .lecture-content {
     height:90%;
     width:100%;
     border: 2px solid black;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
     padding: 10px;
     gap:10px;
     display:flex;
     flex-direction: column;
     flex:0.8;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+    background-color: white;
 }
 
 .metadata-holder {
@@ -545,7 +566,7 @@ h1{
     flex-direction: column;
     background-color: white;
     padding:10px;
-    border-radius: 5px;
+    border-radius: 10px;
     justify-content: center;
 }
 
@@ -576,7 +597,7 @@ video{
     color: white;
     border:none;
     padding:8px 12px;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     height:45px;
     width:146px;
@@ -596,11 +617,32 @@ video{
     justify-content: space-between;
     background-color: white;
     padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     border: 2px solid black;
+
 }
 
 .scratchpad-container > div {
     height: 100%;
+}
+
+
+
+
+
+/* New assignment form */
+#new-assignment {
+    overflow-y: scroll;
+}
+#new-assignment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#new-assignment-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
