@@ -15,11 +15,12 @@ class SQLiteDB:
         self.connection.row_factory = sqlite3.Row
 
     def execute(self, sql, args=None, tries=0):
-        if args is not None:
-            sql = sql % args
         try:
             cursor = self.cursor()
-            cursor.execute(sql)
+            if args is None:
+                cursor.execute(sql)
+            else:
+                cursor.execute(sql, args)
             self.connection.commit()
         except (AttributeError, MySQLdb.OperationalError):
             self.connect()
@@ -128,16 +129,16 @@ class User:
 
     @staticmethod
     def new(first_name, last_name, username, password, is_mentor):
-        rows = db.fetch("""select * from users where username = '%s';""" % (username))
+        rows = db.fetch("""select * from users where username = ?;""" % (username))
         if len(rows) > 0:
             raise UserExistsException("Username already in use")
         
         hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-        db.execute("""insert into users (first_name, last_name, username, password, is_mentor) values ('%s', '%s', '%s', '%s', %d);""", (first_name, last_name, username, hashed_pw, is_mentor))
+        db.execute("""insert into users (first_name, last_name, username, password, is_mentor) values (?, ?, ?, ?, ?);""", (first_name, last_name, username, hashed_pw, is_mentor))
     
     @staticmethod
     def from_credentials(username, password):
-        rows = db.fetch("""select * from users where username = '%s';""", (username))
+        rows = db.fetch("""select * from users where username = ?;""", (username,))
         if len(rows) == 0:
             raise UserNotFoundException(f"User '{username}' not found")
         user = rows[0]
@@ -145,13 +146,13 @@ class User:
             raise InvalidPasswordException(f"Invalid password for user '{username}'")
         
         session_token = secrets.token_hex(32)
-        db.execute("""insert into sessions (session, user_id, expiry) values ('%s', %d, datetime('now', '+1 days'));""", (session_token, user['id']))
+        db.execute("""insert into sessions (session, user_id, expiry) values (?, ?, datetime('now', '+1 days'));""", (session_token, user['id']))
 
         return User(user, session_token)
 
     @staticmethod
     def from_id(user_id):
-        rows = db.fetch("""select * from users where id = %d;""", (user_id))
+        rows = db.fetch("""select * from users where id = ?;""", (user_id,))
         if len(rows) == 0:
             return None
         user = rows[0]
@@ -159,7 +160,7 @@ class User:
     
     @staticmethod
     def from_session(session_token):
-        rows = db.fetch("""select u.* from users u join sessions s on u.id = s.user_id where s.session = '%s' and s.expiry > datetime('now');""", (session_token))
+        rows = db.fetch("""select u.* from users u join sessions s on u.id = s.user_id where s.session = ? and s.expiry > datetime('now');""", (session_token,))
         if len(rows) == 0:
             return None
         user = rows[0]
@@ -179,8 +180,8 @@ class User:
         if max_group_id is None:
             max_group_id = 0
         new_group_id = max_group_id + 1
-        db.execute("""update users set paired_id = %d, pairing_group_id = %d where id = %d;""", (student_id, new_group_id, mentor_id))
-        db.execute("""update users set paired_id = %d, pairing_group_id = %d where id = %d;""", (mentor_id, new_group_id, student_id))
+        db.execute("""update users set paired_id = ?, pairing_group_id = ? where id = ?;""", (student_id, new_group_id, mentor_id))
+        db.execute("""update users set paired_id = ?, pairing_group_id = ? where id = ?;""", (mentor_id, new_group_id, student_id))
 
 
     def __init__(self, sql_data, session_token):
@@ -198,7 +199,7 @@ class User:
         return f"User(id={self.id}, first_name={self.first_name}, last_name={self.last_name}, username={self.username}, is_mentor={self.is_mentor})"
     
     def get_paired_user(self):
-        rows = db.fetch("""select paired_id from users where id = %d;""", (self.id))
+        rows = db.fetch("""select paired_id from users where id = ?;""", (self.id,))
         self.paired_id = rows[0]['paired_id']
         if self.paired_id is None:
             return None
@@ -207,7 +208,7 @@ class User:
     def is_authenticated(self):
         if self.session_token is None:
             return False
-        select_sql = """select * from sessions where session = '%s' and expiry > datetime('now');""" % (self.session_token)
+        select_sql = """select * from sessions where session = ? and expiry > datetime('now');""" % (self.session_token)
         rows = db.fetch(select_sql)
         return len(rows) > 0
     
@@ -215,7 +216,7 @@ class User:
         return self.session_token
     
     def clear_sessions(self):
-        db.execute("""delete from sessions where user_id = %d;""", (self.id))
+        db.execute("""delete from sessions where user_id = ?;""", (self.id))
     
     def pair_with(self, other_user):
         User.pair_users(self.id, other_user.id)
@@ -223,19 +224,19 @@ class User:
 
     # For the conversation feature
     def get_conversation_history(self, limit=50):
-        messages = db.fetch("""select * from messages where pairing_group_id = %d order by timestamp desc limit %d;""", (self.pairing_group_id, limit))
+        messages = db.fetch("""select * from messages where pairing_group_id = ? order by timestamp desc limit ?;""", (self.pairing_group_id, limit))
         return messages[::-1]
 
     def send_to_paired(self, message):
         if self.paired_id is None:
             raise UserNotFoundException("User is not paired with anyone")
-        db.execute("""insert into messages (pairing_group_id, sender_id, message) values (%d, %d, '%s');""", (self.pairing_group_id, self.id, message))
+        db.execute("""insert into messages (pairing_group_id, sender_id, message) values (?, ?, ?);""", (self.pairing_group_id, self.id, message))
 
 
     # For assignments
     def get_assignments(self):
         # get assignments where pairing_group_id matches user's pairing_group_id or is -1
-        assignments = db.fetch("""select * from assignments where pairing_group_id = %d or pairing_group_id = -1;""", (self.pairing_group_id))
+        assignments = db.fetch("""select * from assignments where pairing_group_id = ? or pairing_group_id = -1;""", (self.pairing_group_id,))
         # if they aren't a mentor, hide drafts and templates
         if not self.is_mentor:
             assignments = [a for a in assignments if a['is_draft'] == 0 and a['pairing_group_id'] != -1]
@@ -248,17 +249,17 @@ class User:
     
     def submit_assignment(self, assignment_id, data):
         # TODO fix
-        assignment_rows = db.fetch("""select * from assignments where id = %d;""", (assignment_id))
+        assignment_rows = db.fetch("""select * from assignments where id = ?;""", (assignment_id))
         if len(assignment_rows) == 0:
             raise AssignmentNotFoundException("Assignment not found")
         assignment = assignment_rows[0]
         if assignment['pairing_group_id'] != self.pairing_group_id and assignment['pairing_group_id'] != -1:
             raise AssignmentSubmissionException("User not allowed to submit this assignment")
-        db.execute("""insert into submissions (assignment_id, data) values (%d, '%s');""", (assignment_id, data))
+        db.execute("""insert into submissions (assignment_id, data) values (?, ?);""", (assignment_id, data))
 
     # For scratchpad
     def get_scratchpads(self):
-        scratchpads = db.fetch("""select * from scratchpad where pairing_group_id = %d;""", (self.pairing_group_id))
+        scratchpads = db.fetch("""select * from scratchpad where pairing_group_id = ?;""", (self.pairing_group_id,))
         for i in range(len(scratchpads)):
             scratchpads[i] = Scratchpad(scratchpads[i])
         return scratchpads
@@ -270,13 +271,13 @@ class Assignment:
         pairing_group_id = creator.pairing_group_id
         if pairing_group_id is None:
             raise Exception("User must be paired to create an assignment")
-        cursor = db.execute("""insert into assignments (pairing_group_id, title, description, due_date, is_draft, type, data) values (%d, '', '', datetime('now', '+7 days'), 1, '', '');""", (pairing_group_id))
+        cursor = db.execute("""insert into assignments (pairing_group_id, title, description, due_date, is_draft, type, data) values (?, '', '', datetime('now', '+7 days'), 1, '', '');""", (pairing_group_id))
         assignment_id = cursor.lastrowid
         return Assignment.from_id(assignment_id)
     
     @staticmethod
     def from_id(assignment_id):
-        rows = db.fetch("""select * from assignments where id = %d;""", (assignment_id))
+        rows = db.fetch("""select * from assignments where id = ?;""", (assignment_id))
         if len(rows) == 0:
             return None
         sql_data = rows[0]
@@ -295,23 +296,23 @@ class Assignment:
 
 
     def set_title(self, title):
-        db.execute("""update assignments set title = '%s' where id = %d;""", (title, self.id))
+        db.execute("""update assignments set title = ? where id = ?;""", (title, self.id))
         self.title = title
 
     def set_description(self, description):
-        db.execute("""update assignments set description = '%s' where id = %d;""", (description, self.id))
+        db.execute("""update assignments set description = ? where id = ?;""", (description, self.id))
         self.description = description
 
     def set_due_date(self, due_date):
-        db.execute("""update assignments set due_date = '%s' where id = %d;""", (due_date, self.id))
+        db.execute("""update assignments set due_date = ? where id = ?;""", (due_date, self.id))
         self.due_date = due_date
 
     def publish(self):
-        db.execute("""update assignments set is_draft = 0 where id = %d;""", (self.id))
+        db.execute("""update assignments set is_draft = 0 where id = ?;""", (self.id))
         self.is_draft = 0
 
     def unpublish(self):
-        db.execute("""update assignments set is_draft = 1 where id = %d;""", (self.id))
+        db.execute("""update assignments set is_draft = 1 where id = ?;""", (self.id))
         self.is_draft = 1
 
 class Scratchpad:
@@ -320,11 +321,11 @@ class Scratchpad:
         pairing_group_id = user.pairing_group_id
         if pairing_group_id is None:
             raise Exception("User must be paired to create a scratchpad")
-        db.execute("""insert into scratchpad (pairing_group_id, title, content, linked_assignment_id) values (%d, '%s', '%s', %s);""", (pairing_group_id, title, content, linked_assignment_id if linked_assignment_id is not None else 'NULL'))
+        db.execute("""insert into scratchpad (pairing_group_id, title, content, linked_assignment_id) values (?, ?, ?, ?);""", (pairing_group_id, title, content, linked_assignment_id if linked_assignment_id is not None else 'NULL'))
     
     @staticmethod
     def from_id(scratchpad_id):
-        rows = db.fetch("""select * from scratchpad where id = %d;""", (scratchpad_id))
+        rows = db.fetch("""select * from scratchpad where id = ?;""", (scratchpad_id,))
         if len(rows) == 0:
             return None
         sql_data = rows[0]
@@ -339,11 +340,11 @@ class Scratchpad:
         self.last_modified = sql_data['last_modified']
 
     def set_title(self, title):
-        db.execute("""update scratchpad set title = '%s' where id = %d;""", (title, self.id))
+        db.execute("""update scratchpad set title = ? where id = ?;""", (title, self.id))
         self.title = title
 
     def set_content(self, content):
-        db.execute("""update scratchpad set content = '%s', last_modified = datetime('now') where id = %d;""", (content, self.id))
+        db.execute("""update scratchpad set content = ?, last_modified = datetime('now') where id = ?;""", (content, self.id))
         self.content = content
 
 if __name__ == "__main__":

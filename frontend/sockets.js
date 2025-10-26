@@ -1,4 +1,4 @@
-const WS_URL = "http://localhost:8082/socket.io"
+const WS_URL = "http://localhost:8082"
 
 socket = io(WS_URL, {
     withCredentials: true
@@ -32,6 +32,10 @@ socket.on("initial_scratchpad", (data) => {
     initialize_scratchpad(data);
 })
 
+socket.on("disconnect", () => {
+    console.log("Disconnected from WebSocket server")
+})
+
 function sendMessage(message) {
     socket.emit("send_message", message)
 }
@@ -42,3 +46,14 @@ function updateScratchpad(patch_text, scratchpad_id) {
         'scratchpad_id': scratchpad_id
     })
 }
+
+function debug(){
+    socket.emit("pingpong")
+    setInterval(() => {
+        socket.emit("pingpong")
+        console.log("trying to pingpong")
+        console.log(socket.connected)
+    }, 1000);
+}
+
+debug()

@@ -1,10 +1,10 @@
-const dmp = diff_match_patch();
+var dmp = new diff_match_patch();
 
 let scratchpad_id = "";
 let old_text = "";
 let new_text = "";
 let is_saving = false;
-const scratchpad_area = document.querySelectorAll(".overtype-input")
+const scratchpad_area = document.querySelectorAll(".overtype-input")[0]
 
 function initialize_scratchpad(data){
     old_text = data['content'];
@@ -15,7 +15,7 @@ function initialize_scratchpad(data){
 }
 
 let debounce_timer = null;
-scratchpad_area.addEventListener("input", () => {
+scratchpad_area.addEventListener("input", (e) => {
     new_text = e.target.value;
     debounce_timer = setTimeout(() => {
         if (is_saving || new_text === old_text) {

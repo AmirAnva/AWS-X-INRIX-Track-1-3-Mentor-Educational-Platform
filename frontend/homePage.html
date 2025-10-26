@@ -32,6 +32,25 @@
 
     <div class="main-content">
         <div style="position: relative; flex: 1;">
+            <div id="no-pairing-student" class="full-screen-page" style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px;">
+                <h1>You have not been assigned a mentor</h1>
+                <p>Please contact your institution and ask for your account to be paired.</p>
+            </div>
+
+            <div id="no-pairing-teacher" class="full-screen-page" style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px;">
+                <h1>No pairing found</h1>
+                <p>Enter the ID of a student account to connect your accounts</p>
+                <form id="pair-student-form">
+                    <div style="height: 40px; width: 500px; display: flex; gap: 10px; margin-top: 10px;">
+                        <input style="flex: 1;" name="pairingCode" type="text" placeholder="Enter Student ID here" />
+                        <button type="submit" style="width: 75px;">Pair</button>
+                    </div>
+                </form>
+                <p style="opacity: 0; color: red; margin-top: 10px;" id="pair-error-text">That user doesn't exist !</p>
+                
+                
+            </div>
+
             <div id="assignments" class="full-screen-page">
                 <div class="assignment-container">
                     <h1>Assignments</h1>
@@ -90,7 +109,7 @@
         
 
 
-        <aside class="chat-sidebar">
+        <aside id="chat-sidebar">
             <div class="chat-header">
                 <h2>Chat with Mentor</h2>
                 <p id="mentor-status">Loading...</p>
@@ -139,4 +158,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 <script src="diff_match_patch_uncompressed.js"></script>
 <script src="sockets.js"></script>
+<script src="scratchpad.js"></script>
 </html>
