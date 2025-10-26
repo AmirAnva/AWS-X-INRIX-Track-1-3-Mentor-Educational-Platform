@@ -192,6 +192,9 @@ function loadAssignment(assignmentData) {
         assignmentDescription.textContent = assignmentData.description;
         assignmentDueDate.textContent = "Due Date: " + assignmentData.due_date;
 
+        let lectureVideo = document.getElementById("lecture-video");
+        lectureVideo.src = "/api/v1/assignment_file/" + assignmentData.id;
+
         focusView("assignment");
     } else {
         // fill in overtype textarea

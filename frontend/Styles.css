@@ -669,3 +669,11 @@ video{
     display: flex;
     flex-direction: column;
 }
+
+#assignments {
+    overflow-y: auto;
+}
+
+#lecture-video {
+    width: 100%;
+}

@@ -9,6 +9,8 @@ from database import db
 from database import User, UserNotFoundException, InvalidPasswordException, Assignment
 
 from fastapi import Form
+from fastapi import File, UploadFile
+from io import BytesIO
 
 app = FastAPI()
 app.mount('/socket.io', sio_app)
@@ -54,7 +56,7 @@ async def pair_user(response: Response, session: str = Cookie(None), pairingCode
     user = User.from_session(session)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid session")
-
+    print(user)
     if not user.is_mentor:
         raise HTTPException(status_code=403, detail="Only mentors can pair with students")
 
@@ -96,8 +98,13 @@ async def get_homepage_data(session: str = Cookie(None)):
     assignments = [a.to_json() for a in assignments]
     return {"first_name": user.first_name, "last_name": user.last_name, "username": user.username, "user_type": user.is_mentor, "is_paired": user.paired_id, "assignments": assignments}
 
+
+TEMP_MOVIE_FOLDER = "./temp/movies/"
+import os
+os.makedirs(TEMP_MOVIE_FOLDER, exist_ok=True)
+
 @app.post('/api/v1/create_assignment')
-async def create_assignment(session: str = Cookie(None), title: str = Form(), description: str = Form(), due_date: str = Form()):
+async def create_assignment(session: str = Cookie(None), title: str = Form(), description: str = Form(), due_date: str = Form(), file: UploadFile = File(None)):
     user = User.from_session(session)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid session")
@@ -111,7 +118,28 @@ async def create_assignment(session: str = Cookie(None), title: str = Form(), de
     assignment.set_description(description)
     assignment.set_due_date(due_date)
 
+    if file:
+        file_content = await file.read()
+        file_path = os.path.join(TEMP_MOVIE_FOLDER, f"assignment_{assignment.id}")
+        with open(file_path, "wb") as f:
+            f.write(file_content)
+
     return {"status": "success", "assignment_id": assignment.id}
+
+@app.get('/api/v1/assignment_file/{assignment_id}')
+async def get_assignment_file(assignment_id: int, session: str = Cookie(None)):
+    user = User.from_session(session)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    assignment = Assignment.from_id(assignment_id)
+    if not assignment:
+        raise HTTPException(status_code=404, detail="Assignment not found")
+    
+    file_path = os.path.join(TEMP_MOVIE_FOLDER, f"assignment_{assignment.id}")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Assignment file not found")
+    
+    return FileResponse(file_path, media_type='application/octet-stream', filename=f"assignment_{assignment.id}")
 
 @app.post('/api/v1/submit_assignment')
 async def submit_assignment(session: str = Cookie(None), assignment_id: int = Form(), content: str = Form()):
