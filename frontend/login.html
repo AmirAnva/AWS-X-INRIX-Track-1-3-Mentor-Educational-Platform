@@ -5,9 +5,11 @@
     <title>Document</title>
 </head>
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
     body {
         margin: 0;
-        background-color: gray;
+        background-color: #f0f0f0;
     }
 
     .login-container {
@@ -21,7 +23,7 @@
 
     .login-popup {
         width: 400px;
-        background-color: red;
+        background-color: white;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
@@ -58,37 +60,60 @@
         cursor: pointer;
 
         border: none;
-        border-left: 3px solid black;
+        border-left: 2px solid black;
         padding-left: 15px;
+        color: black;
 
         background-color: white;
+        transition: padding-left 0.2s ease-in-out;
+    }
+
+    button:hover {
+        padding-left: 20px;
+
     }
 
     button > svg {
         width: 40px;
         height: 40px;
     }
+
+    p, label {
+        font-family: 'Lexend', sans-serif;
+        margin: 0;
+
+    }
+
+    h1 {
+        font-family: 'Noto Serif', serif;
+        margin: 0;
+    }
+
+    h2 {
+        font-family: 'Noto Serif', serif;
+        margin: 0;
+    }
 </style>
 <body>
     <div class="login-container">
         <div class="login-popup">
             <form id="login-form">
+                <h1>Login</h1>
                 <div>
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username">
                 </div>
                 <div>
                     <label for="password">Password:</label>
-                    <input type="text" id="password" name="password">
+                    <input type="password" id="password" name="password">
                 </div>                
                 <button>
-                    <p>Login</p>
+                    <p>Continue</p>
                     <svg width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
                         <g transform="matrix(1.07999,0,0,1.37807,-8.89776,-25.4766)">
                             <path d="M21.327,64.009L21.327,45.53L54.06,45.53L54.06,28.371L87.745,54.77L54.06,81.168L54.06,64.009L21.327,64.009Z" style="fill:black;"/>
                         </g>
                     </svg>
-
                 </button>
             </form>
         </div>
