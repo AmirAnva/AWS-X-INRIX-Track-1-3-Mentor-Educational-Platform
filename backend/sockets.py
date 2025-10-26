@@ -9,7 +9,9 @@ redis_manager = socketio.AsyncRedisManager('redis://localhost:6379')
 
 client_origin = [
     "http://localhost:8082",
-    "http://127.0.0.1:8082"
+    "http://127.0.0.1:8082",
+    "https://ec2-34-228-12-244.compute-1.amazonaws.com/",
+    "http://ec2-34-228-12-244.compute-1.amazonaws.com/"
     ]  
 
 sio = socketio.AsyncServer(
