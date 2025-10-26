@@ -133,7 +133,8 @@ async def serve_static(path: str):
 
 if __name__ == "__main__":
     try:
-        User.new_student("Natesh", "Vemuri", "nate", "password")
+ 
+        User.pair_users(mentor_id=2, student_id=1)
     except Exception as e:
         print("User creation error (likely already exists): ", e)
 

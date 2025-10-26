@@ -3,6 +3,7 @@ import traceback
 import MySQLdb
 import bcrypt
 import secrets
+import os
 
 
 class SQLiteDB:
@@ -384,6 +385,8 @@ class Scratchpad:
         db.execute("""update scratchpad set content = ?, last_modified = datetime('now') where id = ?;""", (content, self.id))
         self.content = content
 
+
+
 if __name__ == "__main__":
     import os
     
@@ -416,3 +419,4 @@ if __name__ == "__main__":
     print("Creating an assignment...")
     assignment = Assignment.new(mentor)
     print("Assignment created with ID:", assignment.id)
+
