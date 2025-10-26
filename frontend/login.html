@@ -100,11 +100,11 @@
             <form id="login-form">
                 <h1>Login</h1>
                 <div>
-                    <label for="username">Username:</label>
+                    <label for="username">Username</label>
                     <input type="text" id="username" name="username">
                 </div>
                 <div>
-                    <label for="password">Password:</label>
+                    <label for="password">Password</label>
                     <input type="password" id="password" name="password">
                 </div>                
                 <button>
@@ -119,4 +119,31 @@
         </div>
     </div>
 </body>
+<script>
+    const form = document.getElementById('login-form');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = new FormData(form);
+        const resp = await fetch('/api/v1/auth', {
+            method: 'POST',
+            body: data,
+        });
+        if (resp.ok) {
+            const json = await resp.json();
+            if (json.message == "authenticated") {
+                window.location.reload();
+            }
+        } else {
+            if (resp.status == 404) {
+                // no user add popup
+            } else if (resp.status == 401) {
+                // invalid password popup
+            } else {
+                console.error('Error logging in', resp);
+            }
+        }
+    });
+</script>
 </html>
