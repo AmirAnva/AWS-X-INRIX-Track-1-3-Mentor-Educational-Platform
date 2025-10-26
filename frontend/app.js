@@ -123,7 +123,7 @@ function loadHomePage() {
         }
 
         if (data.is_paired == null) {
-            if (IS_MENTOR) {
+            if (!IS_MENTOR) {
                 focusView("no-pairing-student", false)
             } else { // A mentor
                 focusView("no-pairing-teacher", false)
