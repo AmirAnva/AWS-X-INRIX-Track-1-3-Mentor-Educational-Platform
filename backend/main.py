@@ -161,9 +161,10 @@ async def serve_static(path: str):
 
 if __name__ == "__main__":
     try:
- 
-        User.pair_users(mentor_id=2, student_id=1)
+        User.new("Natesh", "Vemuri", "nate", "password", 0); 
     except Exception as e:
         print("User creation error (likely already exists): ", e)
 
-uvicorn.run(app, host="127.0.0.1", port=8082)
+
+if __name__=="__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8082)
