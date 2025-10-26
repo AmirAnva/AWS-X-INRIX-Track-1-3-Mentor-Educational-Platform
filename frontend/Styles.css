@@ -5,6 +5,11 @@
     font-family: 'Kumbh Sans', sans-serif;
 }
 
+.icon{
+    height: 72px;
+    width: 72px;
+    fill: #f77062;
+}
 .navbar{
     background: black;
     height: 80px;

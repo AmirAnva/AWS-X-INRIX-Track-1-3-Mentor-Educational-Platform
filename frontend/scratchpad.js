@@ -4,7 +4,7 @@ let scratchpad_id = "";
 let old_text = "";
 let new_text = "";
 let is_saving = false;
-const scratchpad_area = document.getElementById("scratchpad_area");
+const scratchpad_area = document.querySelectorAll(".overtype-input")
 
 function initialize_scratchpad(data){
     old_text = data['content'];
