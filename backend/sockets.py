@@ -23,6 +23,7 @@ sio_app = socketio.ASGIApp(sio)
 @sio.event
 async def connect(sid, environ):
     print("Client connected, sid ",sid)
+    print(environ)
     cookie_header = environ.get('HTTP_COOKIE')
     if not cookie_header:
         print("No auth provided, rejecting")

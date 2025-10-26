@@ -129,7 +129,7 @@ class User:
 
     @staticmethod
     def new(first_name, last_name, username, password, is_mentor):
-        rows = db.fetch("""select * from users where username = ?;""" % (username))
+        rows = db.fetch("""select * from users where username = ?;""", (username,))
         if len(rows) > 0:
             raise UserExistsException("Username already in use")
         
@@ -379,4 +379,3 @@ if __name__ == "__main__":
     print("Creating an assignment...")
     assignment = Assignment.new(mentor)
     print("Assignment created with ID:", assignment.id)
-
