@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Home</title>
     <link rel="stylesheet" href="Styles.css">
-
 </head>
 <body>
     <nav class="navbar">
         <div class="navbar__container">
-            <a id="navbar__logo">MNTR.ai</a>
+            <a href="/" id="navbar__logo">Mentor++</a>
             <div class="navbar__toggle" id="mobile-menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -18,19 +17,22 @@
             </div>
             <ul class="navbar__menu">
                 <li class="navbar__item">
-                    <a id="assignments-btn" class="navbar__links">Assignments</a>
+                    <a href="/" class="navbar__links">Profile</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="/" class="navbar__links">OverWatch</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="/" class="navbar__links">Assignments</a>
                 </li>
                 <li class="navbar__btn">
-                    <a class="button">Scratch Pad</a>
+                    <a href="/" class="button">Scratch Pad</a>
                 </li>
             </ul>
         </div>
     </nav>
-    <div class="body-page" style="display: none;" id="scratch-pad"></div>
-    <div class="body-page" style="display: none;" id="assignments-view"></div>
-    <div class="body-page" style="display: none;" id="assignment-view"></div>
+    <script src="app.js"></script>>
 </body>
-<script src="app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 <script src="sockets.js"></script>
 </html>
