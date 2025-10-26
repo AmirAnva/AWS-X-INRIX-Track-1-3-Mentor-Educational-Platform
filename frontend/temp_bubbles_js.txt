@@ -1,4 +1,4 @@
-function getMentorStatus() {
+        function getMentorStatus() {
            
         }
         
@@ -38,15 +38,15 @@ function getMentorStatus() {
             const chatWindow = document.getElementById('chat-messages-container');
             if (!chatWindow) return; 
 
-            // Create all the new HTML elements
+            // create all the new htmL elements
             const container = document.createElement('div');
             container.className = 'message-container sent'; // Aligns to the right
 
             const bubble = document.createElement('div');
-            bubble.className = 'message-bubble sent'; // Styles as a blue bubble
+            bubble.className = 'message-bubble sent'; // gonna be a blue bubble
 
             const textElement = document.createElement('p');
-            textElement.textContent = messageText; // Adds the user's text
+            textElement.textContent = messageText; // Add the user's texts
 
             
             bubble.appendChild(textElement);
@@ -63,7 +63,7 @@ function getMentorStatus() {
             const input = document.getElementById('chat-input');
             if (!input) return; 
 
-            const messageText = input.value.trim(); // remove whitespace
+            const messageText = input.value.trim(); // remove the whitespace
 
             
             if (messageText === "") {
@@ -123,7 +123,7 @@ function getMentorStatus() {
             console.log("testing processNewMentorMessage");
 
             
-            appendReceivedMessage(messageData.text);
+            appendReceivedMessage(messageData.text); //link point
         }
 
 
