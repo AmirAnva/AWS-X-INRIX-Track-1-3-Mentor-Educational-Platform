@@ -5,6 +5,12 @@
     font-family: 'Kumbh Sans', sans-serif;
 }
 
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
 .navbar{
     background: black;
     height: 80px;
@@ -12,7 +18,7 @@
     justify-content: center;
     align-items: center;
     font-size: 1.2rem;
-    position: sticky;
+    /* position: sticky; */
     top: 0;
     z-index: 999;
 }
@@ -56,6 +62,7 @@
 
 .navbar__item{
     height: 80px;
+    cursor: pointer;
 }
 
 .navbar__links{
@@ -190,4 +197,12 @@
     #mobile-menu.is-active .bar:nth-child(3){
         transform: translateY(-8px)rotate(-45deg);
     }
+}
+
+#assignments-view {
+    background-color: indigo;
+}
+
+.body-page {
+    flex: 1;
 }
