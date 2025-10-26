@@ -191,3 +191,18 @@
         transform: translateY(-8px)rotate(-45deg);
     }
 }
+
+
+
+.aside{
+    width: 250px;
+    height: 100vh;
+    background: black;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
