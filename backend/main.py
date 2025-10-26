@@ -1,4 +1,7 @@
 # filename: main.py
+from eventlet import patcher, GreenPool
+patcher.monkey_patch(all=True)
+
 from fastapi import FastAPI, Depends, HTTPException, Cookie, Response
 import uvicorn
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
