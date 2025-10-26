@@ -199,7 +199,9 @@ async def serve_static(path: str):
 
 if __name__ == "__main__":
     try:
-        User.new("Natesh", "Vemuri", "nate", "password", 0); 
+        
+        User.new("Amir", "Anvarkhujaev", "amir", "password", 0);
+        User.new("Ben", "castillo", "ben", "password", 1);
     except Exception as e:
         print("User creation error (likely already exists): ", e)
 
