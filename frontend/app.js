@@ -7,12 +7,20 @@ menu.addEventListener('click', function() {
 });
 
 document.getElementById("assignments-btn").addEventListener("click", function() {
-    let assignmentsView = document.getElementById("assignments-view");
-    assignmentsView.style.display = "block";
-
-    let scratchPad = document.getElementById("scratch-pad");
-    scratchPad.style.display = "none";
-    
-    let assignmentView = document.getElementById("assignment-view");
-    assignmentView.style.display = "none";``
+    focusView("assignments");
 });
+
+document.getElementById("scratch-pad-btn").addEventListener("click", function() {
+    focusView("scratch-pad");
+})
+
+function focusView(viewId) {
+    let views = document.getElementsByClassName("full-screen-page");
+    for (let i = 0; i < views.length; i++) {
+        views[i].style.opacity = "0";
+        views[i].style.pointerEvents = "none";
+    }
+    let targetView = document.getElementById(viewId);
+    targetView.style.opacity = "1";
+    targetView.style.pointerEvents = "auto";
+}

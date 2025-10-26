@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Home</title>
     <link rel="stylesheet" href="Styles.css">
-    
+    <script src="https://unpkg.com/overtype"></script>
 </head>
 <body>
     <nav class="navbar">
         <div class="navbar__container">
-            <a href="/" id="navbar__logo">
-                MNTR.ai
-            </a>
+            <h1 id="navbar__logo">mntr.ai</h1>
             <div class="navbar__toggle" id="mobile-menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -20,22 +18,124 @@
             </div>
             <ul class="navbar__menu">
                 <li class="navbar__item">
-                    <a href="/" class="navbar__links">Profile</a>
+                    <a class="navbar__links">Sign Out</a>
                 </li>
                 <li class="navbar__item">
-                    <a href="/" class="navbar__links">OverWatch</a>
-                </li>
-                <li class="navbar__item">
-                    <a href="/" class="navbar__links">Assignments</a>
+                    <a class="navbar__links" id="assignments-btn">Assignments</a>
                 </li>
                 <li class="navbar__btn">
-                    <a href="/" class="button">Scratch Pad</a>
+                    <a class="button" id="scratch-pad-btn">Scratch Pad</a>
                 </li>
             </ul>
         </div>
     </nav>
-    <script src="app.js"></script>
+
+    <div class="main-content">
+        <div style="position: relative; flex: 1;">
+            <div id="assignments" class="full-screen-page">
+                <div class="assignment-container">
+                    <h1>Assignments</h1>
+                    <div class="assignment" style="border-color: rgb(98, 162, 102)">
+                        <p class="assignment-type">Asynchronous Lesson</p>
+                        <h2>Watch Lecture Video #1</h2>
+                        <p class="assignment-description">This video explains how to do things with scratch. You will learn why scratch is cool, and other cool things about scratch</p>
+                        <p class="assignment-due-date">Due 10/25/2025</p>
+                    </div>
+                    <div class="assignment" style="border-color: rgb(98, 122, 162)">
+                        <p class="assignment-type">Written Submission</p>
+                        <h2>Lecture Essay Response</h2>
+                        <p class="assignment-description">This video explains how to do things with scratch. You will learn why scratch is cool, and other cool things about scratch</p>
+                        <p class="assignment-due-date">Due 10/26/2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="scratch-pad" class="full-screen-page">
+                <h1>TODO: implement scratch pad page</h1>
+            </div>
+
+            <div id="assignment" class="full-screen-page">
+                <div class="assignment-body">
+                    <div class="lecture-content">
+                        <video controls></video>
+                        <div class="metadata-holder">
+                            <div style="">
+                                <h1 class="video-title">Java Glassfish Basics</h1>
+                                <div class="video-horizontals">
+                                    <h2 class="video-class">AP Computer Science A</h2>
+                                    <p class="video-author">Bradley Lindyman</p>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="right-panel">
+                        <div class="scratchpad-container">
+                            <div class="editor"></div>
+                        </div>
+                        <div class="submit-panel">
+                            <p style="color:grey;font-size:12px;">Your instructor will not see your exact notes.</p>
+                            <div class="button-holder">
+                                <button class="video-button">Save for Later</button>
+                                <button class="video-button">Submit</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+
+
+        <aside class="chat-sidebar">
+            <div class="chat-header">
+                <h2>Chat with Mentor</h2>
+                <p id="mentor-status">Loading...</p>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages-container">
+                
+                <div class="message-container received">
+                    <div class="message-bubble received">
+                        <p>Hey, how's that first assignment coming along?</p>
+                    </div>
+                </div>
+                
+                <div class="message-container sent">
+                    <div class="message-bubble sent">
+                        <p>Going well! Just had a quick question about the first part.</p>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        placeholder="Type your message..."
+                        class="chat-input"
+                        id="chat-input" >
+                    <button class="send-button" id="send-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="none" viewBox="0 0 75 75"><path fill="#000" d="m17.545 44.617-1.711 12.219c-.09.621.12 1.25.57 1.691.379.38.89.59 1.41.59.09 0 .18 0 .281-.02l12.22-1.699 16.948 16.95c.38.378.891.59 1.41.59q.226-.002.45-.052a2.01 2.01 0 0 0 1.441-1.3l24.27-70.95.031-.12a1 1 0 0 0 .04-.18 1 1 0 0 0 .02-.18c0-.058.01-.11.01-.172 0-.058 0-.12-.01-.18 0-.05 0-.109-.02-.16-.012-.058-.032-.12-.04-.18-.011-.05-.03-.1-.05-.16-.02-.058-.051-.12-.078-.179a.4.4 0 0 1-.04-.102c0-.011-.019-.02-.019-.039a1 1 0 0 0-.11-.16c-.03-.039-.058-.09-.09-.129l-.12-.12c-.04-.04-.078-.09-.13-.13q-.056-.044-.12-.09c-.051-.039-.11-.078-.172-.109-.012 0-.02-.02-.04-.02a.4.4 0 0 0-.1-.039 1 1 0 0 0-.18-.078c-.051-.02-.102-.03-.16-.05a1 1 0 0 0-.18-.04c-.059 0-.11-.011-.172-.019h-.18c-.059 0-.11 0-.172.012-.058 0-.12.011-.18.02-.058.011-.109.03-.171.038-.04.012-.078.02-.13.032L1.355 24.356c-.649.218-1.14.77-1.301 1.441a2.02 2.02 0 0 0 .531 1.871l16.95 16.95zm3.988.36 39.48-31.06-31.06 39.48-9.78 1.372 1.37-9.782zm26.293 24.27-14.13-14.13L67.249 12.47 47.826 69.25zm14.637-61.56L19.822 41.238 5.692 27.11 62.475 7.687z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+    
+
 </body>
+<script>
+    new OverType(".editor", {
+        toolbar: true, 
+    })
+</script>
+<script src="app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 <script src="diff_match_patch_uncompressed.js"></script>
 <script src="sockets.js"></script>
