@@ -100,7 +100,25 @@ def find_submission_errors(transcription_text, submitted_notes):
         inferenceConfig={"maxTokens": 512}
     )
     response = response['output']['message']['content'][0]['text']
+
+    prompt = "Shorten the response. Ensure that it only contains the errors and does NOT summarize the transcript whatsoever. Your response should be one (1) short paragraph. Avoid markdown and emojis.\n\n"
+    prompt += f"""\n\n
+    Previous Response:\n{response}\n\n
+    """
+    response = bedrock.converse(
+        modelId="global.anthropic.claude-sonnet-4-5-20250929-v1:0",
+        messages=[
+            {
+                "role": "user",
+                "content": [{"text": prompt}],
+            }
+        ],
+        inferenceConfig={"maxTokens": 256}
+    )
+    response = response['output']['message']['content'][0]['text']
     return response
+
+
 
 create_bucket_if_not_exists()
 
