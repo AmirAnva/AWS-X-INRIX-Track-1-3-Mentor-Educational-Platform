@@ -68,8 +68,7 @@ newAssignmentForm.addEventListener("submit", function(event) {
     .then(data => {
         console.log('New assignment response:', data);
         if (data.status === "success") {
-            // After creating the assignment, go back to assignments view
-            focusView("assignments");
+            window.location.reload();
         }
     })
 })
