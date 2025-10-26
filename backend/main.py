@@ -64,7 +64,7 @@ async def get_homepage(session: str = Cookie(None)):
 @app.get("/{path:path}")
 async def serve_static(path: str):
     try:
-        return FileResponse(f"./{path}")
+        return FileResponse(f"../frontend/{path}")
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=404)
 
@@ -83,6 +83,16 @@ async def auth(username: str = Form(), password: str = Form()):
         raise HTTPException(status_code=404, detail="User not found")
     except InvalidPasswordException:
         raise HTTPException(status_code=401, detail="Invalid password")
+
+@app.get('/api/v1/sign_out')
+async def sign_out(session: str = Cookie(None)):
+    user = User.from_session(session)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    user.clear_sessions()
+    response = JSONResponse({"message": "signed out"})
+    response.delete_cookie(key="session")
+    return response
 
 @app.get("/api/v1/homepage/data")
 async def get_homepage_data(): #IGNORE THIS :user: User = Depends(get_required_user)
